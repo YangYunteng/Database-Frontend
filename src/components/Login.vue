@@ -23,10 +23,10 @@
         <el-button type="primary"
                    style="width: 40%;background: #afb4db;border: none"
                    v-on:click="login">login</el-button>
-        <router-link to="register">
-          <el-button type="primary"
-                     style="width: 40%;background: #afb4db;border: none">register</el-button>
-        </router-link>
+<!--        <router-link to="register">-->
+<!--          <el-button type="primary"-->
+<!--                     style="width: 40%;background: #afb4db;border: none">register</el-button>-->
+<!--        </router-link>-->
       </el-form-item>
     </el-form>
   </div>
@@ -56,17 +56,16 @@ export default {
         password: this.loginForm.password
       })
         .then(resp => {
-          alert(resp.status);
-          if (resp.status === 200 && resp.data.hasOwnProperty("token")) {
+          if (resp.status === 200 ) {
             this.$store.commit('login', resp.data);
             this.$router.replace({path: '/'})
           } else{
-            alert('login error1')
+            this.$message.warning('login error1')
           }
         })
         .catch(error => {
           console.log(error);
-          alert('login error2')
+          this.$message.warning('login error2')
         })
     }
   }
@@ -75,7 +74,7 @@ export default {
 
 <style scoped>
   #base_login{
-    background: url("../assets/background/checkerboard-cross.png") repeat;
+    /*background: url("../assets/background/checkerboard-cross.png") repeat;*/
     background-position: center;
     height: 100%;
     width: 100%;
