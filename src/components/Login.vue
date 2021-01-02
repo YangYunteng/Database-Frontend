@@ -2,6 +2,7 @@
   <div id="base_login">
     <el-form :model="loginForm"
              :rules="rules"
+             ref="loginForm"
              class="login_container"
              label-position="left"
              label-width="0px"
@@ -22,7 +23,7 @@
       <el-form-item style="width: 100%">
         <el-button type="primary"
                    style="width: 40%;background: #afb4db;border: none"
-                   v-on:click="login">login
+                   v-on:click="login('loginForm')">login
         </el-button>
         <!--        <router-link to="register">-->
         <!--          <el-button type="primary"-->
@@ -40,48 +41,52 @@
     data() {
       return {
         loginForm: {
-          username: '',
+          jobNumber: '',
           password: ''
         },
         rules: {
-          username: [{required: true, message: '', trigger: 'blur'}],
+          jobNumber: [{required: true, message: '', trigger: 'blur'}],
           password: [{required: true, message: '', trigger: 'blur'}]
         },
         loading: false
       }
     },
     methods: {
-      login() {
-        this.$axios.post('/login', {
-          username: this.loginForm.username,
-          password: this.loginForm.password
+      login(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            this.$axios.post('/login', {
+              jobNumber: this.loginForm.jobNumber,
+              password: this.loginForm.password
+            })
+              .then(resp => {
+                console.log(resp);
+                if (resp.status === 200 && resp.data.result === 1) {
+                  this.$store.commit('login', resp.data);
+                  switch (resp.data.type) {
+                    case 1:
+                      this.$router.push("/DoctorHome").catch(err=>err);
+                      break;
+                    case 2:
+                  }
+                } else {
+                  this.$message({
+                    showClose: true,
+                    message: resp.data.message,
+                    type: 'warning'
+                  });
+                }
+              })
+              .catch(error => {
+                this.$message({
+                  showClose: true,
+                  message: "登录失败",
+                  type: 'error'
+                });
+              })
+          }
+
         })
-          .then(resp => {
-            if (resp.status === 200) {
-              this.$store.commit('login', resp.data);
-              this.$router.replace({path: '/'})
-            } else {
-              this.$message.warning('login error1')
-            }
-          })
-          .catch(error => {
-            console.log(error);
-            this.$message.warning('login error2')
-          })
-          .then(resp => {
-            alert(resp.status);
-            console.log(resp);
-            if (resp.status === 200 && resp.data.result === 0) {
-              // this.$store.commit('login', resp.data);
-              this.$router.replace('/home')
-            } else {
-              alert('login error1')
-            }
-          })
-          .catch(error => {
-            console.log(error);
-            alert('login error2')
-          })
       }
     }
   }
