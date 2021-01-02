@@ -24,11 +24,10 @@
                    style="width: 40%;background: #afb4db;border: none"
                    v-on:click="login">login
         </el-button>
-        <router-link to="register">
-          <el-button type="primary"
-                     style="width: 40%;background: #afb4db;border: none">register
-          </el-button>
-        </router-link>
+        <!--        <router-link to="register">-->
+        <!--          <el-button type="primary"-->
+        <!--                     style="width: 40%;background: #afb4db;border: none">register</el-button>-->
+        <!--        </router-link>-->
       </el-form-item>
     </el-form>
   </div>
@@ -41,11 +40,11 @@
     data() {
       return {
         loginForm: {
-          jobNumber: '',
+          username: '',
           password: ''
         },
         rules: {
-          jobNumber: [{required: true, message: '', trigger: 'blur'}],
+          username: [{required: true, message: '', trigger: 'blur'}],
           password: [{required: true, message: '', trigger: 'blur'}]
         },
         loading: false
@@ -54,9 +53,21 @@
     methods: {
       login() {
         this.$axios.post('/login', {
-          jobNumber: this.loginForm.jobNumber,
+          username: this.loginForm.username,
           password: this.loginForm.password
         })
+          .then(resp => {
+            if (resp.status === 200) {
+              this.$store.commit('login', resp.data);
+              this.$router.replace({path: '/'})
+            } else {
+              this.$message.warning('login error1')
+            }
+          })
+          .catch(error => {
+            console.log(error);
+            this.$message.warning('login error2')
+          })
           .then(resp => {
             alert(resp.status);
             console.log(resp);
@@ -78,7 +89,7 @@
 
 <style scoped>
   #base_login {
-    background: url("../assets/background/checkerboard-cross.png") repeat;
+    /*background: url("../assets/background/checkerboard-cross.png") repeat;*/
     background-position: center;
     height: 100%;
     width: 100%;
