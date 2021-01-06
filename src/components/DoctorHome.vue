@@ -14,21 +14,27 @@
           trigger="click">
           <table>
             <tr>
-              <td>Name:</td>
+              <td>Name： </td>
               <!--<td>{{localStorage.name}}</td>-->
               <td>Doctor1</td>
             </tr>
             <tr>
-              <td>Job Number:</td>
+              <td>Job Number： </td>
               <!--<td>{{localStorage.jobNumber}}</td>-->
               <td>111111</td>
             </tr>
             <tr>
-              <td>Ward Number:</td>
+              <td>Ward Number： </td>
               <!--<td>{{localStorage.wardNumber}}</td>-->
               <td>1</td>
             </tr>
-            <el-button type="primary" size="mini" style="width: 100%" @click="modify">Modify</el-button>
+            <tr>
+              <td>Telephone： </td>
+              <!--<td>{{localStorage.wardNumber}}</td>-->
+              <td>1829671687</td>
+            </tr>
+            <br>
+            <el-button type="primary" size="mini" style="width: 100%" @click="dialogFormVisible = true">Modify</el-button>
           </table>
           <el-button slot="reference" type="text">Account</el-button>
         </el-popover>
@@ -36,6 +42,32 @@
       <el-menu-item index="2" class="pile-right"><span class="el-icon-s-comment"></span>Message</el-menu-item>
     </el-menu>
 
+    <div>
+      <!-- Form -->
+      <el-dialog title="修改信息" :visible.sync="dialogFormVisible" width="30%" center>
+        <el-form :model="modiForm" :rules="rules"  ref="modiForm">
+          <el-form-item prop="name">
+            <el-input type="text" v-model="modiForm.name" autocomplete="off" placeholder="姓名"></el-input>
+          </el-form-item>
+          <el-form-item prop="oldPass">
+            <el-input type="password" v-model="modiForm.oldPass" autocomplete="off" placeholder="旧密码"></el-input>
+          </el-form-item>
+          <el-form-item prop="newPass">
+            <el-input type="password" v-model="modiForm.newPass" autocomplete="off" placeholder="新密码"></el-input>
+          </el-form-item>
+          <el-form-item prop="telephone">
+            <el-input type="text" v-model="modiForm.telephone" autocomplete="off" placeholder="手机"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="cancel('modiForm')">取 消</el-button>
+          <el-button type="primary" @click="modify('modiForm')">确 定</el-button>
+        </div>
+      </el-dialog>
+    </div>
+
+
+<!--    查询&筛选-->
     <el-tabs tab-position="left">
       <el-tab-pane label="病人信息">
         <el-table :data="patientData" stripe style="width: 100%">
@@ -106,8 +138,6 @@
       </el-tab-pane>
     </el-tabs>
   </div>
-
-
 </template>
 
 <script>
@@ -139,10 +169,52 @@
           date: '2016-05-02',
           name: '王小虎',
           address: '上海市普陀区金沙江路 1518 弄'
-        }]
+        }],
+        dialogFormVisible: false,
+        modiForm: {
+          jobNumber:localStorage.getItem('jobNumber'),
+          name: '',
+          oldPass:'',
+          newPass:'',
+          telephone:''
+        },
+        rules: {
+          name: [{required: true, message: '不能为空', trigger: 'blur'}],
+          oldPass: [{required: true, message: '不能为空', trigger: 'blur'}],
+          newPass: [{required: true, message: '不能为空', trigger: 'blur'}],
+          telephone: [{required: true, message: '不能为空', trigger: 'blur'}],
+        },
       };
     },
     methods: {
+      cancel(formName) {
+        this.dialogFormVisible = false;
+        this.$refs[formName].resetFields();
+      },
+      modify(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            this.$axios.post('/modifyUser', {
+              jobNumber: this.modiForm.jobNumber,
+              name: this.modiForm.name,
+              oldPass: this.modiForm.oldPass,
+              newPass: this.modiForm.newPass,
+              telephone: this.modiForm.telephone
+            })
+              .then(resp => {
+                console.log(resp);
+                if (resp.status === 200 && resp.data.result === 1) {
+
+                } else {
+
+                }
+              })
+              .catch(error => {
+
+              })
+          }
+        })
+      },
       handler(scope) {
         //console.log(scope);
         //console.log(this.patientData[0].grade === '轻度');
@@ -150,11 +222,8 @@
       },
       handleSelect(key, keyPath) {
         console.log(key, keyPath);
-      },
-      modify() {
-        dialogFormVisible = true;
-        alert("adssadsa")
       }
+
     }
   }
 </script>

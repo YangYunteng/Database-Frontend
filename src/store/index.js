@@ -35,6 +35,17 @@ export default new Vuex.Store({
       state.telephone = null;
       state.type = null;
       state.wardNumber = null;
+    },
+    modify(state, data) {
+      localStorage.setItem('name', data.name);
+      localStorage.setItem('telephone', data.telephone);
+      localStorage.setItem('type', data.type);
+      localStorage.setItem('wardNumber', data.wardNumber);
+      state.jobNumber = data.jobNumber;
+      state.name = data.name;
+      state.telephone = data.telephone;
+      state.type = data.type;
+      state.wardNumber = data.wardNumber;
     }
   },
   actions: {}
