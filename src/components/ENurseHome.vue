@@ -13,7 +13,7 @@
       <!--      登记病人信息-->
       <el-tab-pane label="登记病人信息">
         <div style="width: 40%;padding: 2%">
-          <el-form :model="registerForm" :rules="rules" ref="registerForm" label-width="120px">
+          <el-form :model="registerForm" :rules="rules" ref="updateForm" label-width="120px">
             <el-form-item prop="name" label="姓名：">
               <el-input type="text" v-model="registerForm.name" autocomplete="off"></el-input>
             </el-form-item>

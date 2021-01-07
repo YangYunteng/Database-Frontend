@@ -21,17 +21,31 @@
           <el-table-column
             prop="roomNumber"
             label="房号"
-            width="250">
+            width="150">
           </el-table-column>
           <el-table-column
             prop="bedNumber"
             label="床号"
-            width="250">
+            width="150">
           </el-table-column>
           <el-table-column
             prop="status"
             label="病床状态"
-            width="250">
+            width="150">
+            <template slot-scope="scope">
+              {{statusDic[BedForm[scope.$index].status]}}
+            </template>
+
+          </el-table-column>
+          <el-table-column
+            prop="patientID"
+            label="病号"
+            width="150">
+          </el-table-column>
+          <el-table-column
+            prop="patientName"
+            label="病人姓名"
+            width="150">
           </el-table-column>
         </el-table>
       </el-tab-pane>
@@ -52,12 +66,10 @@
     components:{WNurseInfo, Navigation, PatientInfo,WNurseHome},
     data() {
       return {
-        BedForm: {
-          roomNumber:'',
-          bedNumber:'',
-          status:''
-        }
-
+        statusDic:['空位','占用中'],
+        BedForm: [
+          {roomNumber:'1', bedNumber:'1', status:'1', patientID:'1', patientName:'asd'}
+        ],
       }
     },
     methods: {

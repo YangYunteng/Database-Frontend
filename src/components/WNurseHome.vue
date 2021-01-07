@@ -13,7 +13,7 @@
       <!--      每日登记-->
       <el-tab-pane label="每日登记">
         <div style="width: 40%;padding: 2%">
-          <el-form :model="registerForm" :rules="rules" ref="registerForm" label-width="120px">
+          <el-form :model="registerForm" :rules="rules" ref="updateForm" label-width="120px">
             <el-form-item prop="status" label="生命状态：">
               <el-radio-group v-model="registerForm.status">
                 <el-radio :label="1">出院</el-radio>
@@ -27,7 +27,7 @@
             <el-form-item prop="symptoms" label="症状：">
               <el-input type="text" v-model="registerForm.symptoms" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item prop="checkResult" label="病情等级：">
+            <el-form-item prop="checkResult" label="检测结果：">
               <el-radio-group v-model="registerForm.checkResult">
                 <el-radio :label="1">阴性</el-radio>
                 <el-radio :label="2">阳性</el-radio>

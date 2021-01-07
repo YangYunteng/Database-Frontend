@@ -25,9 +25,9 @@
                    style="width: 40%;background: #afb4db;border: none"
                    v-on:click="login('loginForm')">login
         </el-button>
-        <!--        <router-link to="register">-->
+        <!--        <router-link to="update">-->
         <!--          <el-button type="primary"-->
-        <!--                     style="width: 40%;background: #afb4db;border: none">register</el-button>-->
+        <!--                     style="width: 40%;background: #afb4db;border: none">update</el-button>-->
         <!--        </router-link>-->
       </el-form-item>
     </el-form>

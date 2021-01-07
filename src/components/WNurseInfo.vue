@@ -34,19 +34,19 @@
     },
     created() {
       const _this = this;
-      this.$axios.post('/wnurseInfo', {
-        wardNumber: this.$store.state.wardNumber,
-      })
-        .then(resp => {
-          console.log(resp);
-          if (resp.status = 200 && resp.data.result === 1) {
-            _this.wnurseInfo = resp.data.wnurseInfo;
-            console.log(this.wnurseInfo);
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        })
+      // this.$axios.post('/wnurseInfo', {
+      //   wardNumber: this.$store.state.wardNumber,
+      // })
+      //   .then(resp => {
+      //     console.log(resp);
+      //     if (resp.status = 200 && resp.data.result === 1) {
+      //       _this.wnurseInfo = resp.data.wnurseInfo;
+      //       console.log(this.wnurseInfo);
+      //     }
+      //   })
+      //   .catch(err => {
+      //     console.log(err);
+      //   })
     }
   }
 </script>
