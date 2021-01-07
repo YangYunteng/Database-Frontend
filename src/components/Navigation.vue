@@ -29,10 +29,17 @@
               <td>Telephone：</td>
               <td>{{this.$store.state.telephone}}</td>
             </tr>
-            <el-button type="primary" size="mini" style="width: 100%" @click="dialogFormVisible = true">Modify
-            </el-button>
-            <br>
-            <el-button type="primary" size="mini" style="width: 100%" @click="logout()">logout</el-button>
+            <tr><br></tr>
+            <tr>
+              <td>
+                <el-button type="primary" size="mini"  @click="dialogFormVisible = true">Modify</el-button>
+              </td>
+              <td>
+                <el-button type="primary" size="mini" @click="logout()">Logout</el-button>
+              </td>
+            </tr>
+
+
           </table>
           <el-button slot="reference" type="text">Account</el-button>
         </el-popover>
@@ -44,7 +51,7 @@
     <div>
       <!-- Form -->
       <el-dialog title="修改信息" :visible.sync="dialogFormVisible" width="30%" center>
-        <el-form :model="modiForm" :rules="rules" ref="modiForm">
+        <el-form :model="modiForm" :rules="rules" ref="addForm">
           <el-form-item prop="name">
             <el-input type="text" v-model="modiForm.name" autocomplete="off" placeholder="姓名"></el-input>
           </el-form-item>
@@ -85,7 +92,7 @@
           oldPass: [{required: true, message: '不能为空', trigger: 'blur'}],
           newPass: [{required: true, message: '不能为空', trigger: 'blur'}],
           telephone: [{required: true, message: '不能为空', trigger: 'blur'}],
-        },
+        }
       };
     },
     methods: {

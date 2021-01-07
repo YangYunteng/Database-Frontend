@@ -1,5 +1,7 @@
 <template>
   <div>
+
+    <!--    筛选框-->
     <div style="float: left;margin: 2%">
       <i><b>筛选条件：</b></i>
       <el-select v-model="value" @change="query" v-show="type==1||type==2">
@@ -30,6 +32,7 @@
       </el-select>
     </div>
 
+    <!--    病人信息表-->
     <el-table :data="patientData" stripe style="width: 100%">
       <el-table-column
         prop="id"
@@ -46,9 +49,12 @@
         width="250">
         <template slot-scope="scope">
           {{statusDic[patientData[scope.$index].status]}}
+<<<<<<< HEAD
           <!--          <el-tag type="success" v-show="patientData[scope.$index].status===0">出院</el-tag>-->
           <!--          <el-tag type="warning" v-show="patientData[scope.$index].status===1">治疗中</el-tag>-->
           <!--          <el-tag type="danger" v-show="patientData[scope.$index].status===2">死亡</el-tag>-->
+=======
+>>>>>>> 3b92e4c95d0061fec6fbc228d9a8ec723c180a1c
         </template>
 
       </el-table-column>
@@ -57,10 +63,13 @@
         width="250">
         <template slot-scope="scope">
           {{gradeDic[patientData[scope.$index].grade]}}
+<<<<<<< HEAD
           <!--          <el-tag type="success" v-show="patientData[scope.$index].grade===0">治愈</el-tag>-->
           <!--          <el-tag type="info" v-show="patientData[scope.$index].grade===1">轻度</el-tag>-->
           <!--          <el-tag type="warning" v-show="patientData[scope.$index].grade===2">中度</el-tag>-->
           <!--          <el-tag type="danger" v-show="patientData[scope.$index].grade===3">重度</el-tag>-->
+=======
+>>>>>>> 3b92e4c95d0061fec6fbc228d9a8ec723c180a1c
         </template>
       </el-table-column>
       <el-table-column
@@ -101,11 +110,54 @@
             <el-button slot="reference" v-show="type==1" type="primary" round>更新</el-button>
           </el-popover>
           <el-button v-show="type==1&&wardNumber==1" type="success" round @click="leave(scope)">出院</el-button>
+          <el-button v-show="type==3" type="primary" plain @click="click2save(scope)">每日登记</el-button>
 
           <!--          <el-button v-show="type==1" @click="handler(scope)">修改</el-button>-->
         </template>
       </el-table-column>
     </el-table>
+
+    <!--      每日登记-->
+    <div>
+      <el-dialog title="每日登记" :visible.sync="dialogFormVisible" width="40%" center>
+        <el-form :model="registerForm" :rules="rules" ref="registerForm" label-width="120px">
+          <el-form-item prop="status" label="生命状态：">
+            <el-radio-group v-model="registerForm.status">
+              <el-radio :label="1">出院</el-radio>
+              <el-radio :label="2">治疗中</el-radio>
+              <el-radio :label="3">死亡</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item prop="temperature" label="体温：">
+            <el-input type="text" v-model="registerForm.temperature" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item prop="symptoms" label="症状：">
+            <el-input type="text" v-model="registerForm.symptoms" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item prop="checkResult" label="检测结果：">
+            <el-radio-group v-model="registerForm.checkResult">
+              <el-radio :label="1">阴性</el-radio>
+              <el-radio :label="2">阳性</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item prop="date" label="日期：">
+            <el-date-picker
+              v-model="registerForm.date"
+              type="date"
+              placeholder="选择日期">
+            </el-date-picker>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="cancel1('registerForm')">取 消</el-button>
+          <el-button type="primary" @click="register('registerForm')">提 交</el-button>
+        </div>
+      </el-dialog>
+    </div>
+
+
+
+
 
   </div>
 
@@ -116,6 +168,22 @@
     name: "PatientInfo",
     data() {
       return {
+        clickedPatientID:'',
+        dialogFormVisible: false,
+        registerForm: {
+          temperature: '',
+          symptoms: '',
+          status: '',
+          checkResult: '',
+          date: ''
+        },
+        rules: {
+          temperature: [{required: true, message: '不能为空', trigger: 'blur'}],
+          symptoms: [{required: true, message: '不能为空', trigger: 'blur'}],
+          status: [{required: true, message: '不能为空', trigger: 'blur'}],
+          checkResult: [{required: true, message: '不能为空', trigger: 'blur'}],
+          date: [{required: true, message: '不能为空', trigger: 'blur'}]
+        },
         updateForm: {
           grade: '',
           status: '',
@@ -179,6 +247,35 @@
       }
     },
     methods: {
+      click2save(scope){
+        this.dialogFormVisible = true;
+        this.clickedPatientID = this.patientData[scope.$index].id;
+      },
+      cancel1(formName) {
+        this.dialogFormVisible = false;
+        this.$refs[formName].resetFields();
+      },
+      register(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            this.$axios.post('/patientRegister', {
+              name: this.registerForm.name,
+              grade: this.registerForm.grade
+            })
+              .then(resp => {
+                console.log(resp);
+                if (resp.status === 200 && resp.data.result === 1) {
+
+                } else {
+
+                }
+              })
+              .catch(error => {
+
+              })
+          }
+        })
+      },
       leave(scope) {
         this.$axios.post('/leaveHospital', {
           patientID: this.patientData[scope.$index].id,
@@ -231,7 +328,7 @@
           {id: this.value, name: 'dsa', status: this.value, grade: 0}
         ]
         // this.$axios.post('/patientInfo', {
-        //   jobNumber: this.modiForm.jobNumber,
+        //   jobNumber: this.addForm.jobNumber,
         //   queryCondition: this.value
         // })
         //   .then(resp => {

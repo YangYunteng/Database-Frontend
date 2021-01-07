@@ -49,6 +49,5 @@ export const router = new Router({
       path: '/',
       name: 'Login',
       component: Login
-    }
-  ]
+    }]
 });
