@@ -62,6 +62,7 @@
       <el-table-column
         label="操作">
         <template slot-scope="scope">
+<!--          更新-->
           <el-popover
             ref="popover"
             placement="left"
@@ -88,6 +89,8 @@
             </el-form>
             <el-button slot="reference" v-show="type==1" type="primary" round>更新</el-button>
           </el-popover>
+
+<!--          核算检测-->
           <el-popover
             ref="pops"
             placement="left"
@@ -269,9 +272,13 @@
       register(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            this.$axios.post('/patientRegister', {
-              name: this.registerForm.name,
-              grade: this.registerForm.grade
+            this.$axios.post('/dailyRegister', {
+              patientID:this.clickedPatientID,
+              temperature: this.registerForm.temperature,
+              symptoms: this.registerForm.symptoms,
+              status: this.registerForm.status,
+              checkResult: this.registerForm.checkResult,
+              date: this.registerForm.date,
             })
               .then(resp => {
                 console.log(resp);
@@ -305,7 +312,7 @@
 
       },
       check0(formName, scope) {
-        this.$refs.popover1.showPopper = false;
+        this.$refs.pops.showPopper = false;
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.$axios.post('/checkByDoctor', {
