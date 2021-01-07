@@ -39,7 +39,7 @@
       })
         .then(resp => {
           console.log(resp);
-          if (resp.status = 200 && resp.data.result === 1) {
+          if (resp.status === 200 && resp.data.result === 1) {
             _this.wnurseInfo = resp.data.wnurseInfo;
             console.log(this.wnurseInfo);
           }
