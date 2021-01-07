@@ -49,12 +49,6 @@
         width="250">
         <template slot-scope="scope">
           {{statusDic[patientData[scope.$index].status]}}
-<<<<<<< HEAD
-          <!--          <el-tag type="success" v-show="patientData[scope.$index].status===0">出院</el-tag>-->
-          <!--          <el-tag type="warning" v-show="patientData[scope.$index].status===1">治疗中</el-tag>-->
-          <!--          <el-tag type="danger" v-show="patientData[scope.$index].status===2">死亡</el-tag>-->
-=======
->>>>>>> 3b92e4c95d0061fec6fbc228d9a8ec723c180a1c
         </template>
 
       </el-table-column>
@@ -63,13 +57,6 @@
         width="250">
         <template slot-scope="scope">
           {{gradeDic[patientData[scope.$index].grade]}}
-<<<<<<< HEAD
-          <!--          <el-tag type="success" v-show="patientData[scope.$index].grade===0">治愈</el-tag>-->
-          <!--          <el-tag type="info" v-show="patientData[scope.$index].grade===1">轻度</el-tag>-->
-          <!--          <el-tag type="warning" v-show="patientData[scope.$index].grade===2">中度</el-tag>-->
-          <!--          <el-tag type="danger" v-show="patientData[scope.$index].grade===3">重度</el-tag>-->
-=======
->>>>>>> 3b92e4c95d0061fec6fbc228d9a8ec723c180a1c
         </template>
       </el-table-column>
       <el-table-column
