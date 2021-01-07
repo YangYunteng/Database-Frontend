@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-table :data="wNurseForm" stripe style="width: 100%">
+    <el-table :data="wnurseInfo" stripe style="width: 100%">
       <el-table-column
         prop="jobNumber"
         label="工号"
@@ -18,8 +18,7 @@
       </el-table-column>
       <el-table-column
         prop="patients"
-        label="病人"
-        width="250">
+        label="病人">
       </el-table-column>
     </el-table>
   </div>
@@ -30,13 +29,24 @@
     name: "WNurseInfo",
     data() {
       return {
-        wNurseForm: {
-          jobNumber: '',
-          name: '',
-          telephone: '',
-          patients: []
-        },
+        wnurseInfo: []
       }
+    },
+    created() {
+      const _this = this;
+      this.$axios.post('/wnurseInfo', {
+        wardNumber: this.$store.state.wardNumber,
+      })
+        .then(resp => {
+          console.log(resp);
+          if (resp.status = 200 && resp.data.result === 1) {
+            _this.wnurseInfo = resp.data.wnurseInfo;
+            console.log(this.wnurseInfo);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
     }
   }
 </script>

@@ -65,9 +65,16 @@
                   this.$store.commit('login', resp.data);
                   switch (resp.data.type) {
                     case 1:
-                      this.$router.push("/DoctorHome").catch(err=>err);
+                      this.$router.push("/DoctorHome").catch(err => err);
                       break;
                     case 2:
+                      this.$router.push("/HNurseHome").catch(err => err);
+                      break;
+                    case 3:
+                      this.$router.push("/WNurseHome").catch(err => err);
+                      break;
+                    case 4:
+                      this.$router.push("./ENurseHome").catch(err => err);
                   }
                 } else {
                   this.$message({
@@ -81,7 +88,7 @@
                 this.$message({
                   showClose: true,
                   message: "登录失败",
-                  type: 'error'
+                  type: 'danger'
                 });
               })
           }

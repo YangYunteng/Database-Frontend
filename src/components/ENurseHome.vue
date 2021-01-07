@@ -5,12 +5,12 @@
     <!--    查询&筛选-->
     <el-tabs tab-position="left">
 
-<!--      查看病人信息-->
+      <!--      查看病人信息-->
       <el-tab-pane label="病人信息">
         <PatientInfo></PatientInfo>
       </el-tab-pane>
 
-<!--      登记病人信息-->
+      <!--      登记病人信息-->
       <el-tab-pane label="登记病人信息">
         <div style="width: 40%;padding: 2%">
           <el-form :model="registerForm" :rules="rules" ref="registerForm" label-width="120px">
@@ -39,14 +39,15 @@
 <script>
   import Navigation from "./Navigation";
   import PatientInfo from "./PatientInfo";
+
   export default {
     name: "ENurseHome",
-    components:{Navigation, PatientInfo},
+    components: {Navigation, PatientInfo},
     data() {
       return {
         registerForm: {
           name: '',
-          grade:1
+          grade: 1
         },
         rules: {
           name: [{required: true, message: '不能为空', trigger: 'blur'}],
@@ -68,13 +69,23 @@
               .then(resp => {
                 console.log(resp);
                 if (resp.status === 200 && resp.data.result === 1) {
-
+                  this.$message({
+                    showClose: true,
+                    message: resp.data.message,
+                    type: 'success'
+                  });
                 } else {
-
+                  this.$message({
+                    showClose: true,
+                    message: resp.data.message,
+                    type: 'warning'
+                  });
                 }
+                this.registerForm.name = '';
+                this.registerForm.grade = 1;
               })
-              .catch(error => {
-
+              .catch(err => {
+                console.log(err);
               })
           }
         })

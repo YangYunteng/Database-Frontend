@@ -3,7 +3,7 @@
 
     <Navigation></Navigation>
 
-<!--    查询&筛选-->
+    <!--    查询&筛选-->
     <el-tabs tab-position="left">
 
       <el-tab-pane label="病人信息">
@@ -12,7 +12,7 @@
 
       <el-tab-pane label="护士长信息">
         <el-table
-          :data="nurseData"
+          :data="hnurseInfo"
           stripe
           style="width: 100%">
           <el-table-column
@@ -44,19 +44,20 @@
   import Navigation from "./Navigation";
   import PatientInfo from "./PatientInfo";
   import WNurseInfo from "./WNurseInfo";
+
   export default {
     name: 'DoctorHome',
-    components:{Navigation, PatientInfo,WNurseInfo},
+    components: {Navigation, PatientInfo, WNurseInfo},
     data() {
       return {
-        nurseData: [],
+        hnurseInfo: [],
         dialogFormVisible: false,
         modiForm: {
-          jobNumber:localStorage.getItem('jobNumber'),
+          jobNumber: localStorage.getItem('jobNumber'),
           name: '',
-          oldPass:'',
-          newPass:'',
-          telephone:''
+          oldPass: '',
+          newPass: '',
+          telephone: ''
         },
         rules: {
           name: [{required: true, message: '不能为空', trigger: 'blur'}],
@@ -66,8 +67,22 @@
         },
       };
     },
-    methods: {
-
+    methods: {},
+    created() {
+      const _this = this;
+      this.$axios.post('/hnurseInfo', {
+        wardNumber: this.$store.state.wardNumber,
+      })
+        .then(resp => {
+          console.log(resp);
+          if (resp.status = 200 && resp.data.result === 1) {
+            _this.hnurseInfo = resp.data.hnurseInfo;
+            console.log(this.hnurseInfo);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
     }
   }
 </script>

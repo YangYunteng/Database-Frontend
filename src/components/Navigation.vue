@@ -14,27 +14,25 @@
           trigger="click">
           <table>
             <tr>
-              <td>Name： </td>
-              <!--<td>{{localStorage.name}}</td>-->
-              <td>Doctor1</td>
+              <td>Name：</td>
+              <td>{{this.$store.state.name}}</td>
             </tr>
             <tr>
-              <td>Job Number： </td>
-              <!--<td>{{localStorage.jobNumber}}</td>-->
-              <td>111111</td>
+              <td>Job Number：</td>
+              <td>{{this.$store.state.jobNumber}}</td>
             </tr>
             <tr>
-              <td>Ward Number： </td>
-              <!--<td>{{localStorage.wardNumber}}</td>-->
-              <td>1</td>
+              <td>Ward Number：</td>
+              <td>{{this.$store.state.wardNumber}}</td>
             </tr>
             <tr>
-              <td>Telephone： </td>
-              <!--<td>{{localStorage.wardNumber}}</td>-->
-              <td>1829671687</td>
+              <td>Telephone：</td>
+              <td>{{this.$store.state.telephone}}</td>
             </tr>
+            <el-button type="primary" size="mini" style="width: 100%" @click="dialogFormVisible = true">Modify
+            </el-button>
             <br>
-            <el-button type="primary" size="mini" style="width: 100%" @click="dialogFormVisible = true">Modify</el-button>
+            <el-button type="primary" size="mini" style="width: 100%" @click="logout()">logout</el-button>
           </table>
           <el-button slot="reference" type="text">Account</el-button>
         </el-popover>
@@ -46,7 +44,7 @@
     <div>
       <!-- Form -->
       <el-dialog title="修改信息" :visible.sync="dialogFormVisible" width="30%" center>
-        <el-form :model="modiForm" :rules="rules"  ref="modiForm">
+        <el-form :model="modiForm" :rules="rules" ref="modiForm">
           <el-form-item prop="name">
             <el-input type="text" v-model="modiForm.name" autocomplete="off" placeholder="姓名"></el-input>
           </el-form-item>
@@ -70,66 +68,92 @@
 </template>
 
 <script>
-    export default {
-      name: "Navigation",
-      data() {
-        return {
-          dialogFormVisible: false,
-          modiForm: {
-            jobNumber:localStorage.getItem('jobNumber'),
-            name: '',
-            oldPass:'',
-            newPass:'',
-            telephone:''
-          },
-          rules: {
-            name: [{required: true, message: '不能为空', trigger: 'blur'}],
-            oldPass: [{required: true, message: '不能为空', trigger: 'blur'}],
-            newPass: [{required: true, message: '不能为空', trigger: 'blur'}],
-            telephone: [{required: true, message: '不能为空', trigger: 'blur'}],
-          },
-        };
+  export default {
+    name: "Navigation",
+    data() {
+      return {
+        dialogFormVisible: false,
+        modiForm: {
+          jobNumber: localStorage.getItem('jobNumber'),
+          name: '',
+          oldPass: '',
+          newPass: '',
+          telephone: ''
+        },
+        rules: {
+          name: [{required: true, message: '不能为空', trigger: 'blur'}],
+          oldPass: [{required: true, message: '不能为空', trigger: 'blur'}],
+          newPass: [{required: true, message: '不能为空', trigger: 'blur'}],
+          telephone: [{required: true, message: '不能为空', trigger: 'blur'}],
+        },
+      };
+    },
+    methods: {
+      handler(scope) {
+        //console.log(scope);
+        //console.log(this.patientData[0].grade === '轻度');
+        // console.log(this.patientData[scope.$index].status === 0)
       },
-      methods: {
-        handler(scope) {
-          //console.log(scope);
-          //console.log(this.patientData[0].grade === '轻度');
-          // console.log(this.patientData[scope.$index].status === 0)
-        },
-        handleSelect(key, keyPath) {
-          // console.log(key, keyPath);
-        },
-        cancel(formName) {
-          this.dialogFormVisible = false;
-          this.$refs[formName].resetFields();
-        },
-        modify(formName) {
-          this.$refs[formName].validate((valid) => {
-            if (valid) {
-              this.$axios.post('/modifyUser', {
-                jobNumber: this.modiForm.jobNumber,
-                name: this.modiForm.name,
-                oldPass: this.modiForm.oldPass,
-                newPass: this.modiForm.newPass,
-                telephone: this.modiForm.telephone
+      handleSelect(key, keyPath) {
+        // console.log(key, keyPath);
+      },
+      cancel(formName) {
+        this.dialogFormVisible = false;
+        this.$refs[formName].resetFields();
+      },
+      logout() {
+        this.$router.push("/").catch(err => err);
+        this.$store.commit('logout');
+      },
+      modify(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            this.$axios.post('/modifyUser', {
+              jobNumber: this.modiForm.jobNumber,
+              name: this.modiForm.name,
+              oldPass: this.modiForm.oldPass,
+              newPass: this.modiForm.newPass,
+              telephone: this.modiForm.telephone
+            })
+              .then(resp => {
+                console.log(resp);
+                if (resp.status === 200 && resp.data.result === 1) {
+                  localStorage.setItem("name", this.modiForm.name);
+                  localStorage.setItem("telephone", this.modiForm.telephone);
+                  this.$store.state.name = this.modiForm.name;
+                  this.$store.state.telephone = this.modiForm.telephone;
+                  this.dialogFormVisible = false;
+                  this.modiForm.name = '';
+                  this.modiForm.oldPass = '';
+                  this.modiForm.newPass = '';
+                  this.modiForm.telephone = '';
+                  this.$message({
+                    showClose: true,
+                    message: resp.data.message,
+                    type: 'success'
+                  });
+                } else {
+                  this.$message({
+                    showClose: true,
+                    message: resp.data.message,
+                    type: 'warning'
+                  });
+                }
               })
-                .then(resp => {
-                  console.log(resp);
-                  if (resp.status === 200 && resp.data.result === 1) {
-
-                  } else {
-
-                  }
-                })
-                .catch(error => {
-
-                })
-            }
-          })
-        }
+              .catch(error => {
+                console.log(error);
+                this.$message({
+                  showClose: true,
+                  message: "修改失败chucuo",
+                  type: 'danger'
+                });
+              })
+          }
+        })
       }
-
     }
+
+  }
 </script>
 
 <style scoped>
@@ -139,6 +163,7 @@
     font-size: large;
     padding: 5px;
   }
+
   .pile-left {
     font-size: large;
     padding: 5px;
