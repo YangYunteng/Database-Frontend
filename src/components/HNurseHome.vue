@@ -1,14 +1,69 @@
 <template>
   <div>
+    <Navigation></Navigation>
 
+    <!--    查询&筛选-->
+    <el-tabs tab-position="left">
+
+      <!--      查看病人信息-->
+      <el-tab-pane label="病人信息">
+        <PatientInfo></PatientInfo>
+      </el-tab-pane>
+
+      <!--      病房护士-->
+      <el-tab-pane label="病房护士">
+        <WNurseInfo></WNurseInfo>
+      </el-tab-pane>
+
+      <!--      病床信息-->
+      <el-tab-pane label="病床信息">
+        <el-table :data="BedForm" stripe style="width: 100%">
+          <el-table-column
+            prop="roomNumber"
+            label="房号"
+            width="250">
+          </el-table-column>
+          <el-table-column
+            prop="bedNumber"
+            label="床号"
+            width="250">
+          </el-table-column>
+          <el-table-column
+            prop="status"
+            label="病床状态"
+            width="250">
+          </el-table-column>
+        </el-table>
+      </el-tab-pane>
+
+
+    </el-tabs>
   </div>
 
 </template>
 
 <script>
-    export default {
-        name: "HNurseHome"
+  import Navigation from "./Navigation";
+  import PatientInfo from "./PatientInfo";
+  import WNurseHome from "./WNurseHome";
+  import WNurseInfo from "./WNurseInfo";
+  export default {
+    name: "HNurseHome",
+    components:{WNurseInfo, Navigation, PatientInfo,WNurseHome},
+    data() {
+      return {
+        BedForm: {
+          roomNumber:'',
+          bedNumber:'',
+          status:''
+        }
+
+      }
+    },
+    methods: {
+
     }
+  }
 </script>
 
 <style scoped>
