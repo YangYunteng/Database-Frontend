@@ -20,14 +20,14 @@ export const router = new Router({
     //     requireAuth: true // 需要登录权限
     //   }
     // },
-    {
-      path: '/',
-      name: 'HNurseHome',
-      component: HNurseHome,
-      // meta: {
-      //   requireAuth: true // 需要登录权限
-      // }
-    },
+    // {
+    //   path: '/HNurseHome',
+    //   name: 'HNurseHome',
+    //   component: HNurseHome,
+    //   meta: {
+    //     requireAuth: true // 需要登录权限
+    //   }
+    // },
     //
     // {
     //   path: '/ENurseHome',
@@ -37,14 +37,14 @@ export const router = new Router({
     //     requireAuth: true // 需要登录权限
     //   }
     // },
-    // {
-    //   path: '/WNurseHome',
-    //   name: 'WNurseHome',
-    //   component: WNurseHome,
-    //   meta: {
-    //     requireAuth: true // 需要登录权限
-    //   }
-    // },
+    {
+      path: '/',
+      name: 'WNurseHome',
+      component: WNurseHome,
+      meta: {
+        requireAuth: true // 需要登录权限
+      }
+    },
     // {
     //   path: '/',
     //   name: 'Login',

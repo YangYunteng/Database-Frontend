@@ -44,7 +44,7 @@
     <div>
       <!-- Form -->
       <el-dialog title="修改信息" :visible.sync="dialogFormVisible" width="30%" center>
-        <el-form :model="modiForm" :rules="rules" ref="modiForm">
+        <el-form :model="modiForm" :rules="rules" ref="addForm">
           <el-form-item prop="name">
             <el-input type="text" v-model="modiForm.name" autocomplete="off" placeholder="姓名"></el-input>
           </el-form-item>
@@ -85,7 +85,7 @@
           oldPass: [{required: true, message: '不能为空', trigger: 'blur'}],
           newPass: [{required: true, message: '不能为空', trigger: 'blur'}],
           telephone: [{required: true, message: '不能为空', trigger: 'blur'}],
-        },
+        }
       };
     },
     methods: {
