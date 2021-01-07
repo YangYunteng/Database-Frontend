@@ -11,7 +11,7 @@
         </el-option>
       </el-select>
 
-      <el-select v-model="value" @change="query"  v-show="type==4">
+      <el-select v-model="value" @change="query" v-show="type==4">
         <el-option
           v-for="item in option2"
           :key="item.value"
@@ -20,7 +20,7 @@
         </el-option>
       </el-select>
 
-      <el-select v-model="value" @change="query"  v-show="type==3">
+      <el-select v-model="value" @change="query" v-show="type==3">
         <el-option
           v-for="item in option3"
           :key="item.value"
@@ -46,9 +46,9 @@
         width="250">
         <template slot-scope="scope">
           {{statusDic[patientData[scope.$index].status]}}
-<!--          <el-tag type="success" v-show="patientData[scope.$index].status===0">出院</el-tag>-->
-<!--          <el-tag type="warning" v-show="patientData[scope.$index].status===1">治疗中</el-tag>-->
-<!--          <el-tag type="danger" v-show="patientData[scope.$index].status===2">死亡</el-tag>-->
+          <!--          <el-tag type="success" v-show="patientData[scope.$index].status===0">出院</el-tag>-->
+          <!--          <el-tag type="warning" v-show="patientData[scope.$index].status===1">治疗中</el-tag>-->
+          <!--          <el-tag type="danger" v-show="patientData[scope.$index].status===2">死亡</el-tag>-->
         </template>
 
       </el-table-column>
@@ -57,10 +57,10 @@
         width="250">
         <template slot-scope="scope">
           {{gradeDic[patientData[scope.$index].grade]}}
-<!--          <el-tag type="success" v-show="patientData[scope.$index].grade===0">治愈</el-tag>-->
-<!--          <el-tag type="info" v-show="patientData[scope.$index].grade===1">轻度</el-tag>-->
-<!--          <el-tag type="warning" v-show="patientData[scope.$index].grade===2">中度</el-tag>-->
-<!--          <el-tag type="danger" v-show="patientData[scope.$index].grade===3">重度</el-tag>-->
+          <!--          <el-tag type="success" v-show="patientData[scope.$index].grade===0">治愈</el-tag>-->
+          <!--          <el-tag type="info" v-show="patientData[scope.$index].grade===1">轻度</el-tag>-->
+          <!--          <el-tag type="warning" v-show="patientData[scope.$index].grade===2">中度</el-tag>-->
+          <!--          <el-tag type="danger" v-show="patientData[scope.$index].grade===3">重度</el-tag>-->
         </template>
       </el-table-column>
       <el-table-column
@@ -102,7 +102,7 @@
           </el-popover>
           <el-button v-show="type==1&&wardNumber==1" type="success" round @click="leave(scope)">出院</el-button>
 
-<!--          <el-button v-show="type==1" @click="handler(scope)">修改</el-button>-->
+          <!--          <el-button v-show="type==1" @click="handler(scope)">修改</el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -117,7 +117,7 @@
     data() {
       return {
         updateForm: {
-          grade:'',
+          grade: '',
           status: '',
           checkResult: '',
         },
@@ -126,10 +126,10 @@
           status: [{required: true, message: '不能为空', trigger: 'blur'}],
           checkResult: [{required: true, message: '不能为空', trigger: 'blur'}]
         },
-        statusDic:['','出院','治疗中','死亡'],
-        gradeDic:['','轻度','中度','重度','治愈'],
-        type: 1, //localStorage中读取
-        wardNumber:1,
+        statusDic: ['', '出院', '治疗中', '死亡'],
+        gradeDic: ['', '轻度', '中度', '重度', '治愈'],
+        type: localStorage.type, //localStorage中读取
+        wardNumber: localStorage.wardNumber,
         option1: [{
           value: '0',
           label: '无筛选'
@@ -143,28 +143,28 @@
         option2: [{
           value: '0',
           label: '无筛选'
-        },{
+        }, {
           value: '3',
           label: '轻病区'
         }, {
-            value: '4',
-            label: '中病区'
-          },{
-            value: '5',
-            label: '重病区'
-          },{
-            value: '6',
-            label: '隔离区'
-          },{
-            value: '7',
-            label: '轻病级'
-          },{
-            value: '8',
-            label: '中病级'
-          },{
-            value: '9',
-            label: '重病级'
-          }],
+          value: '4',
+          label: '中病区'
+        }, {
+          value: '5',
+          label: '重病区'
+        }, {
+          value: '6',
+          label: '隔离区'
+        }, {
+          value: '7',
+          label: '轻病级'
+        }, {
+          value: '8',
+          label: '中病级'
+        }, {
+          value: '9',
+          label: '重病级'
+        }],
         option3: [{
           value: '0',
           label: '无筛选'
@@ -174,14 +174,14 @@
         }],
         value: '',
         patientData: [
-          {id:1,name:'asd',status:1,grade:1}
+          {id: 1, name: 'asd', status: 1, grade: 1}
         ],
       }
     },
     methods: {
-      leave(scope){
+      leave(scope) {
         this.$axios.post('/leaveHospital', {
-          patientID:this.patientData[scope.$index].id,
+          patientID: this.patientData[scope.$index].id,
         })
           .then(resp => {
             console.log(resp);
@@ -200,15 +200,15 @@
         this.$refs.popover.showPopper = false;
         this.$refs[formName].resetFields();
       },
-      update(formName,scope) {
+      update(formName, scope) {
         this.$refs.popover.showPopper = false;
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.$axios.post('/updatePatientInfo', {
-              patientID:this.patientData[scope.$index].id,
+              patientID: this.patientData[scope.$index].id,
               grade: this.updateForm.grade,
               status: this.updateForm.status,
-              checkResult:this.updateForm.checkResult,
+              checkResult: this.updateForm.checkResult,
             })
               .then(resp => {
                 console.log(resp);
@@ -225,10 +225,10 @@
         })
       },
 
-      query(){
+      query() {
         alert(this.gradeDic[1]);
         this.patientData = [
-          {id:this.value,name:'dsa',status:this.value,grade:0}
+          {id: this.value, name: 'dsa', status: this.value, grade: 0}
         ]
         // this.$axios.post('/patientInfo', {
         //   jobNumber: this.modiForm.jobNumber,
@@ -247,6 +247,24 @@
         //   })
 
       }
+    },
+    created() {
+      const _this = this;
+      this.$axios.post('/patientInfo', {
+        jobNumber: this.$store.state.jobNumber,
+        queryCondition: 0
+      })
+        .then(resp => {
+          console.log(resp);
+          if (resp.status === 200 && resp.data.result === 1) {
+            _this.patientData = resp.data.patientData;
+          } else {
+
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
     }
   }
 </script>
