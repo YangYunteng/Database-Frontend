@@ -7,9 +7,11 @@
       background-color="white"
       text-color="grey"
       active-text-color="black">
-      <el-menu-item index="1" class="pile-right"><span class="el-icon-s-custom"></span>
+
+      <!--      账户-->
+      <el-menu-item index="1" class="pile-right">
         <el-popover
-          title="Personal"
+          title="个人信息"
           placement="bottom"
           trigger="click">
           <table>
@@ -32,7 +34,7 @@
             <tr><br></tr>
             <tr>
               <td>
-                <el-button type="primary" size="mini"  @click="dialogFormVisible = true">Modify</el-button>
+                <el-button type="primary" size="mini" @click="dialogFormVisible = true">Modify</el-button>
               </td>
               <td>
                 <el-button type="primary" size="mini" @click="logout()">Logout</el-button>
@@ -41,17 +43,32 @@
 
 
           </table>
-          <el-button slot="reference" type="text">Account</el-button>
+          <span slot="reference" type="text"><span class="el-icon-s-custom"></span>Account</span>
         </el-popover>
       </el-menu-item>
-      <el-menu-item index="2" class="pile-right"><span class="el-icon-s-comment"></span>Message</el-menu-item>
+
+      <!--      信箱-->
+      <el-menu-item index="2" class="pile-right">
+        <el-popover
+          placement="bottom"
+          trigger="click">
+          <el-table :data="messageData">
+            <el-table-column width="150" property="date" label="日期"></el-table-column>
+            <el-table-column width="100" property="name" label="姓名"></el-table-column>
+            <el-table-column width="300" property="address" label="地址"></el-table-column>
+          </el-table>
+          <span slot="reference" type="text"><span class="el-icon-s-comment"></span>Message</span>
+        </el-popover>
+
+
+      </el-menu-item>
       <el-menu-item class="pile-left">Medical System</el-menu-item>
     </el-menu>
 
     <div>
       <!-- Form -->
       <el-dialog title="修改信息" :visible.sync="dialogFormVisible" width="30%" center>
-        <el-form :model="modiForm" :rules="rules" ref="addForm">
+        <el-form :model="modiForm" :rules="rules" ref="modiForm">
           <el-form-item prop="name">
             <el-input type="text" v-model="modiForm.name" autocomplete="off" placeholder="姓名"></el-input>
           </el-form-item>
@@ -79,6 +96,11 @@
     name: "Navigation",
     data() {
       return {
+        messageData: [{
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }],
         dialogFormVisible: false,
         modiForm: {
           jobNumber: localStorage.getItem('jobNumber'),

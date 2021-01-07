@@ -77,24 +77,42 @@
               </el-form-item>
               <el-form-item prop="status" label="生命状态：">
                 <el-radio-group v-model="updateForm.status">
-                  <el-radio :label="1">出院</el-radio>
                   <el-radio :label="2">治疗中</el-radio>
                   <el-radio :label="3">死亡</el-radio>
                 </el-radio-group>
               </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="update('updateForm',scope)">提交</el-button>
+                <el-button @click="cancel('updateForm')">取消</el-button>
+              </el-form-item>
+            </el-form>
+            <el-button slot="reference" v-show="type==1" type="primary" round>更新</el-button>
+          </el-popover>
+          <el-popover
+            ref="pops"
+            placement="left"
+            width="400"
+            trigger="click">
+            <el-form :model="checkForm" :rules="checkRules" ref="checkForm" label-width="120px">
               <el-form-item prop="checkResult" label="检测结果：">
-                <el-radio-group v-model="updateForm.checkResult">
+                <el-radio-group v-model="checkForm.checkResult">
                   <el-radio :label="1">阴性</el-radio>
                   <el-radio :label="2">阳性</el-radio>
                 </el-radio-group>
               </el-form-item>
-
+              <el-form-item prop="date" label="日期：">
+                <el-date-picker
+                  v-model="checkForm.date"
+                  type="date"
+                  placeholder="选择日期">
+                </el-date-picker>
+              </el-form-item>
               <el-form-item>
-                <el-button type="primary" @click="update('updateForm',scope)">提交</el-button>
-                <el-button @click="cancel('updateForm')">重置</el-button>
+                <el-button type="primary" @click="check0('checkForm',scope)">提交</el-button>
+                <el-button @click="cancel0('checkForm')">取消</el-button>
               </el-form-item>
             </el-form>
-            <el-button slot="reference" v-show="type==1" type="primary" round>更新</el-button>
+            <el-button slot="reference" v-show="type==1" type="primary" round>核酸检测</el-button>
           </el-popover>
           <el-button v-show="type==1&&wardNumber==1" type="success" round @click="leave(scope)">出院</el-button>
           <el-button v-show="type==3" type="primary" plain @click="click2save(scope)">每日登记</el-button>
@@ -171,20 +189,26 @@
           checkResult: [{required: true, message: '不能为空', trigger: 'blur'}],
           date: [{required: true, message: '不能为空', trigger: 'blur'}]
         },
+        checkForm:{
+          checkResult: '',
+          date: ''
+        },
+        checkRules: {
+          checkResult: [{required: true, message: '不能为空', trigger: 'blur'}],
+          date: [{required: true, message: '不能为空', trigger: 'blur'}]
+        },
         updateForm: {
           grade: '',
           status: '',
-          checkResult: '',
         },
         updateRules: {
           grade: [{required: true, message: '不能为空', trigger: 'blur'}],
-          status: [{required: true, message: '不能为空', trigger: 'blur'}],
-          checkResult: [{required: true, message: '不能为空', trigger: 'blur'}]
+          status: [{required: true, message: '不能为空', trigger: 'blur'}]
         },
         statusDic: ['', '出院', '治疗中', '死亡'],
         gradeDic: ['', '轻度', '中度', '重度', '治愈'],
-        type: localStorage.type, //localStorage中读取
-        wardNumber: localStorage.wardNumber,
+        type: 1, //localStorage中读取
+        wardNumber: 1,
         option1: [{
           value: '0',
           label: '无筛选'
@@ -280,6 +304,32 @@
           })
 
       },
+      check0(formName, scope) {
+        this.$refs.popover1.showPopper = false;
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            this.$axios.post('/checkByDoctor', {
+              checkResult:this.checkForm.checkResult,
+              date:this.checkForm.date
+            })
+              .then(resp => {
+                console.log(resp);
+                if (resp.status === 200 && resp.data.result === 1) {
+
+                } else {
+
+                }
+              })
+              .catch(error => {
+
+              })
+          }
+        })
+      },
+      cancel0(formName) {
+        this.$refs[formName].resetFields();
+        this.$refs.pops.showPopper = false;
+      },
       cancel(formName) {
         this.$refs.popover.showPopper = false;
         this.$refs[formName].resetFields();
@@ -292,7 +342,6 @@
               patientID: this.patientData[scope.$index].id,
               grade: this.updateForm.grade,
               status: this.updateForm.status,
-              checkResult: this.updateForm.checkResult,
             })
               .then(resp => {
                 console.log(resp);
@@ -331,24 +380,6 @@
         //   })
 
       }
-    },
-    created() {
-      const _this = this;
-      this.$axios.post('/patientInfo', {
-        jobNumber: this.$store.state.jobNumber,
-        queryCondition: 0
-      })
-        .then(resp => {
-          console.log(resp);
-          if (resp.status === 200 && resp.data.result === 1) {
-            _this.patientData = resp.data.patientData;
-          } else {
-
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        })
     }
   }
 </script>
