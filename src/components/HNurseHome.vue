@@ -61,19 +61,40 @@
   import PatientInfo from "./PatientInfo";
   import WNurseHome from "./WNurseHome";
   import WNurseInfo from "./WNurseInfo";
+
   export default {
     name: "HNurseHome",
-    components:{WNurseInfo, Navigation, PatientInfo,WNurseHome},
+    components: {WNurseInfo, Navigation, PatientInfo, WNurseHome},
     data() {
       return {
-        statusDic:['空位','占用中'],
+        statusDic: ['空位', '占用中'],
         BedForm: [
-          {roomNumber:'1', bedNumber:'1', status:'1', patientID:'1', patientName:'asd'}
+          {roomNumber: '1', bedNumber: '1', status: '1', patientID: '1', patientName: 'asd'}
         ],
       }
     },
-    methods: {
+    methods: {},
 
+    created() {
+      const _this = this;
+      this.$axios.post('/bedInfo', {
+        wardNumber: localStorage.getItem("wardNumber")
+      })
+        .then(resp => {
+          console.log(resp);
+          if (resp.status === 200 && resp.data.result === 1) {
+            _this.BedForm = resp.data.bedInfo;
+          } else {
+            this.$message({
+              showClose: true,
+              message: "数据加载失败",
+              type: 'warning'
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   }
 </script>

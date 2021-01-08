@@ -74,10 +74,8 @@
         wardNumber: this.$store.state.wardNumber,
       })
         .then(resp => {
-          console.log(resp);
           if (resp.status === 200 && resp.data.result === 1) {
             _this.hnurseInfo = resp.data.hnurseInfo;
-            console.log(this.hnurseInfo);
           }
         })
         .catch(err => {

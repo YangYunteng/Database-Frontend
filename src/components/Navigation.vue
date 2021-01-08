@@ -53,9 +53,13 @@
           placement="bottom"
           trigger="click">
           <el-table :data="messageData">
-            <el-table-column width="150" property="date" label="日期"></el-table-column>
-            <el-table-column width="100" property="name" label="姓名"></el-table-column>
-            <el-table-column width="300" property="address" label="地址"></el-table-column>
+            <el-table-column width="150" property="message" label="内容"></el-table-column>
+            <el-table-column width="300" label="操作">
+              <template slot-scope="scope">
+                <el-button @click="">标为已读</el-button>
+              </template>
+
+            </el-table-column>
           </el-table>
           <span slot="reference" type="text"><span class="el-icon-s-comment"></span>Message</span>
         </el-popover>
@@ -134,6 +138,19 @@
         this.$router.push("/").catch(err => err);
         this.$store.commit('logout');
       },
+      hasRead(scope) {
+        this.$axios.post('/deleteMessage', {
+          messageID: this.messageData[scope.$index].id,
+        })
+          .then(resp => {
+            if (resp.status === 200 && resp.data.result === 1) {
+              messageData.splice(this.messageData[scope.$index].id, 1);
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          })
+      },
       modify(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
@@ -180,8 +197,21 @@
           }
         })
       }
+    },
+    created() {
+      const _this = this;
+      this.$axios.post('/message', {
+        jobNumber: localStorage.getItem(),
+      })
+        .then(resp => {
+          if (resp.status === 200 && resp.data.result === 1) {
+            _this.messageData = resp.data.MessageData;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
     }
-
   }
 </script>
 

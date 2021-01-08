@@ -62,7 +62,7 @@
       <el-table-column
         label="操作">
         <template slot-scope="scope">
-<!--          更新-->
+          <!--          更新-->
           <el-popover
             ref="popover"
             placement="left"
@@ -90,7 +90,7 @@
             <el-button slot="reference" v-show="type==1" type="primary" round>更新</el-button>
           </el-popover>
 
-<!--          核算检测-->
+          <!--          核算检测-->
           <el-popover
             ref="pops"
             placement="left"
@@ -164,9 +164,6 @@
     </div>
 
 
-
-
-
   </div>
 
 </template>
@@ -176,7 +173,7 @@
     name: "PatientInfo",
     data() {
       return {
-        clickedPatientID:'',
+        clickedPatientID: '',
         dialogFormVisible: false,
         registerForm: {
           temperature: '',
@@ -192,7 +189,7 @@
           checkResult: [{required: true, message: '不能为空', trigger: 'blur'}],
           date: [{required: true, message: '不能为空', trigger: 'blur'}]
         },
-        checkForm:{
+        checkForm: {
           checkResult: '',
           date: ''
         },
@@ -210,8 +207,8 @@
         },
         statusDic: ['', '出院', '治疗中', '死亡'],
         gradeDic: ['', '轻度', '中度', '重度', '治愈'],
-        type: 1, //localStorage中读取
-        wardNumber: 1,
+        type: localStorage.getItem("type"), //localStorage中读取
+        wardNumber: localStorage.getItem("wardNumber"),
         option1: [{
           value: '0',
           label: '无筛选'
@@ -255,13 +252,11 @@
           label: '满足出院条件'
         }],
         value: '',
-        patientData: [
-          {id: 1, name: 'asd', status: 1, grade: 1}
-        ],
+        patientData: [],
       }
     },
     methods: {
-      click2save(scope){
+      click2save(scope) {
         this.dialogFormVisible = true;
         this.clickedPatientID = this.patientData[scope.$index].id;
       },
@@ -270,10 +265,11 @@
         this.$refs[formName].resetFields();
       },
       register(formName) {
+
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.$axios.post('/dailyRegister', {
-              patientID:this.clickedPatientID,
+              patientID: this.clickedPatientID,
               temperature: this.registerForm.temperature,
               symptoms: this.registerForm.symptoms,
               status: this.registerForm.status,
@@ -283,13 +279,20 @@
               .then(resp => {
                 console.log(resp);
                 if (resp.status === 200 && resp.data.result === 1) {
-
-                } else {
-
+                  this.cancel1(formName);
+                  this.$message({
+                    showClose: true,
+                    message: resp.data.message,
+                    type: 'success'
+                  });
                 }
               })
               .catch(error => {
-
+                this.$message({
+                  showClose: true,
+                  message: "记录失败",
+                  type: 'warning'
+                })
               })
           }
         })
@@ -301,9 +304,17 @@
           .then(resp => {
             console.log(resp);
             if (resp.status === 200 && resp.data.result === 1) {
-
+              this.$message({
+                showClose: true,
+                message: resp.data.message,
+                type: 'success'
+              });
             } else {
-
+              this.$message({
+                showClose: true,
+                message: resp.data.message,
+                type: 'warning'
+              });
             }
           })
           .catch(error => {
@@ -316,19 +327,26 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.$axios.post('/checkByDoctor', {
-              checkResult:this.checkForm.checkResult,
-              date:this.checkForm.date
+              patientID: this.patientData[scope.$index].id,
+              checkResult: this.checkForm.checkResult,
+              date: this.checkForm.date
             })
               .then(resp => {
                 console.log(resp);
                 if (resp.status === 200 && resp.data.result === 1) {
-
-                } else {
-
+                  this.$message({
+                    showClose: true,
+                    message: resp.data.message,
+                    type: 'success'
+                  })
                 }
               })
               .catch(error => {
-
+                this.$message({
+                  showClose: true,
+                  message: "添加失败",
+                  type: 'warning'
+                })
               })
           }
         })
@@ -353,40 +371,70 @@
               .then(resp => {
                 console.log(resp);
                 if (resp.status === 200 && resp.data.result === 1) {
-
-                } else {
-
+                  this.$message({
+                    showClose: true,
+                    message: resp.data.message,
+                    type: 'success'
+                  })
                 }
               })
               .catch(error => {
-
+                this.$message({
+                  showClose: true,
+                  message: "修改失败",
+                  type: 'warning'
+                })
               })
           }
         })
       },
 
       query() {
-        alert(this.gradeDic[1]);
-        this.patientData = [
-          {id: this.value, name: 'dsa', status: this.value, grade: 0}
-        ]
-        // this.$axios.post('/patientInfo', {
-        //   jobNumber: this.addForm.jobNumber,
-        //   queryCondition: this.value
-        // })
-        //   .then(resp => {
-        //     console.log(resp);
-        //     if (resp.status === 200 && resp.data.result === 1) {
-        //
-        //     } else {
-        //
-        //     }
-        //   })
-        //   .catch(error => {
-        //
-        //   })
-
-      }
+        this.$axios.post('/patientInfo', {
+          jobNumber: localStorage.getItem("jobNumber"),
+          queryCondition: this.value
+        })
+          .then(resp => {
+            console.log(resp);
+            if (resp.status === 200 && resp.data.result === 1) {
+              this.patientData = resp.date.patientData;
+              this.$message({
+                showClose: true,
+                message: resp.data.message,
+                type: 'success'
+              });
+            }
+          })
+          .catch(error => {
+            this.$message({
+              showClose: true,
+              message: "筛选失败",
+              type: 'success'
+            });
+          })
+      },
+    },
+    created() {
+      const _this = this;
+      this.$axios.post('/patientInfo', {
+        jobNumber: localStorage.getItem("jobNumber"),
+        queryCondition: 0
+      })
+        .then(resp => {
+          console.log(resp);
+          if (resp.status === 200 && resp.data.result === 1) {
+            _this.patientData = resp.data.patientData;
+          } else {
+            this.$message({
+              showClose: true,
+              message: "数据加载失败",
+              type: 'warning'
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
     }
   }
 </script>

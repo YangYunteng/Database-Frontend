@@ -60,7 +60,6 @@
               password: this.loginForm.password
             })
               .then(resp => {
-                console.log(resp);
                 if (resp.status === 200 && resp.data.result === 1) {
                   this.$store.commit('login', resp.data);
                   switch (resp.data.type) {

@@ -41,12 +41,14 @@
       <el-table-column
         label="操作">
         <template slot-scope="scope">
-          <el-button type="danger" round @click="deleteNurse(scope)">删除</el-button>
+          <el-button type="danger" round @click="deleteNurse(scope)" v-show="type===2">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <el-button icon="el-icon-plus" type="primary" plain @click="dialogFormVisible = true" style="float: left;margin: 2%">增加护士</el-button>
+    <el-button icon="el-icon-plus" type="primary" plain @click="dialogFormVisible = true"
+               style="float: left;margin: 2%" v-show="type===2">增加护士
+    </el-button>
 
   </div>
 </template>
@@ -56,6 +58,7 @@
     name: "WNurseInfo",
     data() {
       return {
+        type: localStorage.getItem("type"),
         dialogFormVisible: false,
         addForm: {
           name: '',
@@ -65,7 +68,7 @@
           name: [{required: true, message: '不能为空', trigger: 'blur'}],
           telephone: [{required: true, message: '不能为空', trigger: 'blur'}],
         },
-        wnurseInfo: [{jobNumber:1,name:'asd',telephone:1546666,patients:'张三-李四-王二麻子'}]
+        wnurseInfo: []
       }
     },
     methods: {
@@ -90,12 +93,11 @@
         this.dialogFormVisible = false;
         this.$refs[formName].resetFields();
       },
-      deleteNurse(scope){
+      deleteNurse(scope) {
         this.$axios.post('/deleteNurse', {
-          jobNumber:this.wnurseInfo[scope.$index].jobNumber
+          jobNumber: this.wnurseInfo[scope.$index].jobNumber
         })
           .then(resp => {
-            console.log(resp);
             if (resp.status === 200 && resp.data.result === 1) {
 
             } else {
@@ -114,10 +116,8 @@
         wardNumber: this.$store.state.wardNumber,
       })
         .then(resp => {
-          console.log(resp);
           if (resp.status === 200 && resp.data.result === 1) {
             _this.wnurseInfo = resp.data.wnurseInfo;
-            console.log(this.wnurseInfo);
           }
         })
         .catch(err => {
