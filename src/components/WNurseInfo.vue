@@ -41,13 +41,13 @@
       <el-table-column
         label="操作">
         <template slot-scope="scope">
-          <el-button type="danger" round @click="deleteNurse(scope)" v-show="type===2">删除</el-button>
+          <el-button type="danger" round @click="deleteNurse(scope)" v-show="type==2">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <el-button icon="el-icon-plus" type="primary" plain @click="dialogFormVisible = true"
-               style="float: left;margin: 2%" v-show="type===2">增加护士
+               style="float: left;margin: 2%" v-show="type==2">增加护士
     </el-button>
 
   </div>
@@ -76,12 +76,16 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.$axios.post('/addNurse', {
-              wardNumber: 1,//localStorage里读取
+              wardNumber: localStorage.getItem('wardNumber'),//localStorage里读取
               name: this.addForm.name,
               telephone: this.addForm.telephone
             })
               .then(resp => {
-
+                console.log(resp);
+                if (resp.status === 200 && resp.data.result === 1) {
+                  this.cancel(formName);
+                  location.reload();
+                }
               })
               .catch(error => {
 
@@ -94,18 +98,28 @@
         this.$refs[formName].resetFields();
       },
       deleteNurse(scope) {
+        console.log(this.wnurseInfo[scope.$index].jobNumber);
         this.$axios.post('/deleteNurse', {
           jobNumber: this.wnurseInfo[scope.$index].jobNumber
         })
           .then(resp => {
             if (resp.status === 200 && resp.data.result === 1) {
-
+              this.$message({
+                showClose: true,
+                message: "删除成功",
+                type: 'success'
+              });
+              location.reload();
             } else {
-
+              this.$message({
+                showClose: true,
+                message: resp.data.message,
+                type: 'warning'
+              });
             }
           })
           .catch(error => {
-
+            console.log(error);
           })
       }
 
@@ -116,6 +130,7 @@
         wardNumber: this.$store.state.wardNumber,
       })
         .then(resp => {
+          console.log(resp);
           if (resp.status === 200 && resp.data.result === 1) {
             _this.wnurseInfo = resp.data.wnurseInfo;
           }

@@ -397,7 +397,7 @@
           .then(resp => {
             console.log(resp);
             if (resp.status === 200 && resp.data.result === 1) {
-              this.patientData = resp.date.patientData;
+              this.patientData = resp.data.patientData;
               this.$message({
                 showClose: true,
                 message: resp.data.message,
@@ -406,6 +406,7 @@
             }
           })
           .catch(error => {
+            console.log(error);
             this.$message({
               showClose: true,
               message: "筛选失败",

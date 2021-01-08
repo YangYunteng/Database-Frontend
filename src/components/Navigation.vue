@@ -47,16 +47,18 @@
         </el-popover>
       </el-menu-item>
 
-      <!--      信箱-->
+      <!--信箱-->
       <el-menu-item index="2" class="pile-right">
         <el-popover
           placement="bottom"
           trigger="click">
           <el-table :data="messageData">
-            <el-table-column width="150" property="message" label="内容"></el-table-column>
-            <el-table-column width="300" label="操作">
+            <el-table-column width="300" property="message" label="内容"></el-table-column>
+            <el-table-column width="200" label="操作">
               <template slot-scope="scope">
-                <el-button @click="">标为已读</el-button>
+                <el-button @click="hasRead(scope)" v-show="messageData[scope.$index].status==1">标为已读</el-button>
+                <el-button @click="hasRead(scope)" v-show="messageData[scope.$index].status==0" :disabled="true">已读
+                </el-button>
               </template>
 
             </el-table-column>
@@ -100,11 +102,7 @@
     name: "Navigation",
     data() {
       return {
-        messageData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }],
+        messageData: [],
         dialogFormVisible: false,
         modiForm: {
           jobNumber: localStorage.getItem('jobNumber'),
@@ -143,6 +141,7 @@
           messageID: this.messageData[scope.$index].id,
         })
           .then(resp => {
+            console.log(resp);
             if (resp.status === 200 && resp.data.result === 1) {
               messageData.splice(this.messageData[scope.$index].id, 1);
             }
@@ -201,11 +200,12 @@
     created() {
       const _this = this;
       this.$axios.post('/message', {
-        jobNumber: localStorage.getItem(),
+        jobNumber: localStorage.getItem('jobNumber'),
       })
         .then(resp => {
+          console.log(resp);
           if (resp.status === 200 && resp.data.result === 1) {
-            _this.messageData = resp.data.MessageData;
+            _this.messageData = resp.data.messageData;
           }
         })
         .catch(err => {
