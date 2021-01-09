@@ -306,6 +306,7 @@
                 message: resp.data.message,
                 type: 'success'
               });
+              location.reload();
             } else {
               this.$message({
                 showClose: true,
@@ -337,6 +338,7 @@
                     type: 'success'
                   })
                 }
+                location.reload();
               })
               .catch(error => {
                 this.$message({
@@ -374,6 +376,7 @@
                     message: resp.data.message,
                     type: 'success'
                   })
+                  location.reload();
                 }
               })
               .catch(error => {

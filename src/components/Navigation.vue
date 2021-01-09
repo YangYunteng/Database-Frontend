@@ -144,6 +144,7 @@
             console.log(resp);
             if (resp.status === 200 && resp.data.result === 1) {
               messageData.splice(this.messageData[scope.$index].id, 1);
+              location.reload();
             }
           })
           .catch(err => {
@@ -189,7 +190,7 @@
                 console.log(error);
                 this.$message({
                   showClose: true,
-                  message: "修改失败chucuo",
+                  message: "修改失败",
                   type: 'danger'
                 });
               })
