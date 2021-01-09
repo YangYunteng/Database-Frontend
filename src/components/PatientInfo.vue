@@ -119,8 +119,6 @@
           </el-popover>
           <el-button v-show="type==1&&wardNumber==1" type="success" round @click="leave(scope)">出院</el-button>
           <el-button v-show="type==3" type="primary" plain @click="click2save(scope)">每日登记</el-button>
-
-          <!--          <el-button v-show="type==1" @click="handler(scope)">修改</el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -131,7 +129,6 @@
         <el-form :model="registerForm" :rules="rules" ref="registerForm" label-width="120px">
           <el-form-item prop="status" label="生命状态：">
             <el-radio-group v-model="registerForm.status">
-              <el-radio :label="1">出院</el-radio>
               <el-radio :label="2">治疗中</el-radio>
               <el-radio :label="3">死亡</el-radio>
             </el-radio-group>
@@ -205,7 +202,7 @@
           grade: [{required: true, message: '不能为空', trigger: 'blur'}],
           status: [{required: true, message: '不能为空', trigger: 'blur'}]
         },
-        statusDic: ['', '出院', '治疗中', '死亡'],
+        statusDic: ['', '出院', '治疗中', '死亡','隔离区'],
         gradeDic: ['', '轻度', '中度', '重度', '治愈'],
         type: localStorage.getItem("type"), //localStorage中读取
         wardNumber: localStorage.getItem("wardNumber"),
@@ -363,6 +360,7 @@
         this.$refs.popover.showPopper = false;
         this.$refs[formName].validate((valid) => {
           if (valid) {
+            console.log(this.updateForm.grade);
             this.$axios.post('/updatePatientInfo', {
               patientID: this.patientData[scope.$index].id,
               grade: this.updateForm.grade,
